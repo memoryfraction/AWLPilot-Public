@@ -126,6 +126,8 @@ Trading data, Schwab credentials, OAuth tokens, and application logs remain loca
 - **Telegram Group**: https://t.me/+VPy-VLis8gVmYWM1
 - **Business licensing & custom development**: alphawealthlab@outlook.com
 - **Product website**: www.alpha-wealth-lab.com
+- **AI agent guide** (install, connect, troubleshoot; for Claude Code, Cursor, ...): [AGENTS.md](AGENTS.md)
+- **MCP server guide**: [MCP.md](MCP.md)
 - **Risk disclaimer**: [Charles Schwab Risk Disclaimer](CHARLES_SCHWAB_DISCLAIMER.md)
 
 ## License
@@ -227,6 +229,8 @@ Trading data, Schwab credentials, OAuth tokens, and application logs remain loca
 - **Telegram 群组**: https://t.me/+VPy-VLis8gVmYWM1
 - **商业授权与定制开发**: alphawealthlab@outlook.com
 - **产品官网**: www.alpha-wealth-lab.com
+- **AI agent 指南**（安装、连接、排错；适用于 Claude Code、Cursor 等）: [AGENTS.md](AGENTS.md)
+- **MCP 使用说明**: [MCP.md](MCP.md)
 - **风险免责声明**: [Charles Schwab 风险免责声明](CHARLES_SCHWAB_DISCLAIMER.md)
 
 ## License
