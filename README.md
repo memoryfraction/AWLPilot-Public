@@ -42,7 +42,7 @@ Free to download and try; the in-app trial includes every feature. Pro is **$49/
 ## Support
 
 - Bugs and questions: [GitHub Issues](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/issues) or alphawealthlab@outlook.com. No promised response time on Pro; Family has priority replies.
-- Server + PC walkthrough: [LAN-Server-Setup.md](LAN-Server-Setup.md). Telegram: https://t.me/+VPy-VLis8gVmYWM1
+- Install on one computer, use from another (step by step, 两台电脑详细步骤): [Two-Computer-Setup.md](Two-Computer-Setup.md). Full Linux server walkthrough: [LAN-Server-Setup.md](LAN-Server-Setup.md). Telegram: https://t.me/+VPy-VLis8gVmYWM1
 - Release notes: [CHANGELOG.md](CHANGELOG.md) and the [website changelog](https://www.alpha-wealth-lab.com/changelog).
 
 ## What AWLPilot is not
