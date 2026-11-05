@@ -1,246 +1,201 @@
-# Quant.Infra.Net.Pro
+# AWLPilot
 
-[![.NET](https://img.shields.io/badge/.NET-8.0-blueviolet)](https://dotnet.microsoft.com/download/dotnet/8.0)
+> **Keep your own ETFs on target, automatically, in the Schwab account you already have.**
+> Set your target weights once (say 60% VTI / 40% BND). AWLPilot watches the drift and brings you back. It runs on your own computer: your money, your password and your trading data never leave your machine.
 
-> **Quant.Infra.Net.Pro** — The only Schwab API client that survives the 7-day refresh token expiry. Free to download, free to try, and runs on your machine so trading data never leaves your computer.
+[Website & pricing](https://www.alpha-wealth-lab.com/pricing/) · [Download](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest) · [Quick-start guide](Quick-start%20Guide.md) · [Ask an AI agent to set it up](AGENTS.md) · [中文](#中文)
 
----
-
-## Version History
-
-| Version | Date | Description |
-|---------|------|-------------|
-| **1.6.3** *(current)* | 2026-07-11 | **Privacy mask for financial data**: added eye-toggle icon on Dashboard and Rebalance pages. Sensitive amounts and account numbers are masked as '****' by default. Users click the eye icon to reveal actual values. **Connection recovery with instant token refresh**: centralized SchwabConnectionRecoveryService handles token refresh on failed reads with short backoff after network loss. **EULA acceptance flow**: one-time End User License Agreement acceptance persisted per machine, re-prompted when EULA version changes. |
-| 1.6.0 | 2026-07-03 | **Dashboard account data correction**: NetLiquidateValue now uses the authoritative Schwab liquidationValue field instead of equity. Unrealized/Realized P&L now come from account-level totalUnrealizedGainsLosses/totalRealizedGainsLosses instead of position-level daily P&L, fixing the bug where RealizedPnL always equaled UnrealizedPnL. |
-| 1.5.4 | 2026-07-03 | **Rebalance basis correction**: target portfolio percentages and suggested actions now use the Charles Schwab Total Accounts Value basis, include cash and money market positions consistently, show calculated target holdings in the table, and allow 100% core allocation when no free allocation is desired. |
-| 1.5.3 | 2026-07-02 | **macOS/Linux runtime compatibility**: SchwabTokenStore now uses Windows DPAPI on Windows and AES-GCM with a local per-user key on macOS/Linux, avoiding non-Windows ProtectedData runtime failures. |
-| 1.5.2 | 2026-07-02 | **macOS HTTPS certificate onboarding fix**: startup guidance now instructs users to trust the generated public .cer certificate in the System keychain instead of importing the private-key .pfx. Linux trust-store guidance also uses the public .cer file. |
-| 1.5.1 | 2026-07-02 | **Financial compliance logging hardening**: Added centralized sensitive-data redaction for logs and user-facing error surfaces. OAuth codes, token fragments, token refresh response bodies, order identifiers, account value amounts, cookie storage paths, and raw exception messages are no longer emitted through normal logs, API errors, query-string redirects, or Blazor error banners. |
-| 1.5.0 | 2026-06-28 | **Options API and code quality upgrade**: new OptionsController with historical price download (CSV/JSON/batch), Swagger-documented option chain endpoint, fixed XML doc warnings, and bilingual Chinese/English comments compliance audit. |
-| 1.4.9 | 2026-06-28 | **Schwab API JSON serialization hardening**: Quotes and Accounts now return explicit Web response DTOs, and price history maps broker models to Web DTOs before JSON serialization to avoid Release/obfuscated 500 responses. |
-| 1.4.8 | 2026-06-24 | **Code quality and safety improvements**: fixed realized P/L calculation, removed blocking async patterns, reduced Playwright install churn, fixed license telemetry race conditions, unified persistent storage paths, and implemented auto-execution safety guardrails. |
-| 1.4.6 | 2026-06-22 | **Rebalance and reliability update**: editable target portfolio holdings, external position drift display, manual/auto execution modes, NetLiquidateValue terminology alignment, and shared LicenseForge Polly retry pipeline. |
-| 1.4.4 | 2026-06-18 | **Unattended Schwab recovery**: centralized connection recovery (SchwabConnectionRecoveryService), immediate token refresh on failed reads, configurable auto re-auth checks (SchwabAutoReauthBackgroundService), persisted MFA state. |
-| 1.4.3 | 2026-06-18 | Packaging release aligned with Quant.Infra.Net.Pro.Web deployment artifacts. |
-| 1.4.2 | 2026-06-14 | Schwab API JSON serialization fix: Accounts, positions, and quotes now return Web API DTOs to avoid 500 errors in Release/obfuscated builds. |
-| 1.4.1 | 2026-06-09 | Secure onboarding hardening: email verification before trial activation and stricter settings completion checks. |
-| 1.4.0 | 2026-06-08 | Initial commercial release: new users can activate a 3-month free trial via email verification; existing users can directly enter their license key and email. Connects to Charles Schwab brokerage via Web API. Architecture migration: removed all .cshtml, fully migrated to Blazor Server .razor components. |
-| 1.3.7 | 2026-06-08 | Logging unification & obfuscation hardening. Replaced ILogger&lt;T&gt; with UtilityService.LogAndWriteLine(). |
-| 1.3.2 | 2026-06-07 | Code standards enforcement + Code obfuscation for release builds. Network retry: Polly retry for OAuth token exchange. |
-| 1.2.5 | 2026-06-06 | Settings page — browser UI for License Key, Schwab credentials, RedirectUri. |
-| 1.2.3 | 2026-06-06 | Unattended architecture: Token encryption, 15-min background refresh, exponential backoff retry. |
-| 1.0.0 | 2025-05-29 | Initial release: Schwab OAuth, account management, quotes, orders, LicenseForge validation, EULA, HTTPS, single-file deploy. |
-
----
+> **Naming note.** The product is now called **AWLPilot** (formerly *Quant.Infra.Net.Pro*). The installer, the program and the data folder still carry the old name for now, so you will see `QuantInfraNetPro` and `Quant.Infra.Net.Pro` below. Nothing else changes.
 
 # English
 
-## Quant.Infra.Net.Pro — Unattended Charles Schwab Trading Gateway
+## Why it exists
 
-> Website: **[https://www.alpha-wealth-lab.com/](https://www.alpha-wealth-lab.com/)**
+Schwab only auto-rebalances inside *Intelligent Portfolios*, with Schwab's funds and a forced cash allocation. If you hold your own ETFs in a normal account, rebalancing means doing the arithmetic and placing the trades yourself. Doing it with scripts through Schwab's API breaks every 7 days, when the refresh token expires.
 
-| Challenge | How Pro Edition Solves It |
-|-----------|--------------------------|
-| Schwab access token expires every 30 minutes, refresh token expires every 7 days | Fully automatic token lifecycle: background refresh every 15 min + automated browser login on day 6.5 |
-| OAuth re-authorization requires a browser (breaks headless trading) | Automated browser re-login with 30-hour retry window |
-| MFA / 2FA blocks automated login after credentials are submitted | App detects MFA and suspends auto-reauth for manual intervention. MFA cannot be automated - user must authorize via browser when prompted. |
-| API credentials are complex and error-prone to configure | Browser-based Settings UI: configure all credentials through web interface |
-| No visibility into whether unattended trading is working | Auto-refreshing Dashboard: token status, re-auth heartbeat, cookie status every 60 seconds |
-| SSL certificate management is a hassle for local apps | Auto-generated 5-year cert, auto-renewed if less than 30 days remaining |
+AWLPilot closes that gap: **your own mix, your own account, rebalanced automatically.**
 
-## What You Get
+## What it does
 
-| Feature | What It Does |
-|---------|-------------|
-| Account Dashboard | Real-time summary: total value, cash balance, buying power, unrealized/realized P&L |
-| Positions View | Current holdings with cost basis and unrealized P&L |
-| Real-Time Quotes | Stock quotes (AAPL, MSFT, etc.) with auto-refresh |
-| Options Chain | Current options chain data (strike, expiration, type, bid/ask, last price, volume, open interest); not historical option chains |
-| Order History | Last 60 days of orders with execution details |
-| Price History API | OHLCV candlestick data for US equities and ETFs only, intraday to monthly. Schwab does not provide price history for options or futures. |
-| Options API | Historical options price download in CSV and JSON formats, batch query support |
-| Portfolio Rebalance | Multi-asset target rebalancing with editable holdings, drift calculation, manual/auto execution modes |
-| Privacy Mask | Eye-toggle icon on Dashboard and Rebalance pages — sensitive amounts and account numbers masked as '****' by default |
-| Connection Recovery | Centralized Schwab connection self-healing with instant token refresh on failed reads, short backoff after network loss |
-| Automated Re-auth | Playwright browser automation for silent OAuth re-authorization before 7-day refresh token expiry, with 30-hour retry window |
-| License Validation | LicenseForge-backed periodic verification with offline-tolerant cache |
-| Version Badge | Current version displayed in-app navigation bar, linking to full version history page |
-| Cross-Platform | Windows, macOS, and Linux support with platform-aware token storage (DPAPI vs AES-GCM) |
-| Web API | Full RESTful API with Swagger documentation and API versioning |
+| | |
+|---|---|
+| **Rebalance by your rules** | Set target weights; see current drift and the exact trade list; run it manually, or let it run automatically (Pro). Safety guardrails block automatic runs while orders are in flight. |
+| **Stays connected** | Handles Schwab's 30-minute access token and 7-day refresh token for you, including automatic re-login. If Schwab asks for MFA it stops and tells you; MFA is never bypassed. |
+| **Local first** | Runs on your own PC or server. Credentials, tokens, trades and logs stay on your machine. Sensitive amounts are masked by default. |
+| **Works with your AI agent** | Optional read-only MCP server so Claude Code, Cursor and others can read your account and rebalance suggestions. It has no tool that places or cancels orders. See [MCP.md](MCP.md). |
+| **Also a developer API** | Accounts, positions, quotes, option chains, price history and order history over a local REST API with Swagger. |
 
-## Financial Compliance & Privacy Update
+## Get started in 10 minutes
 
-Version **1.5.1** introduced centralized financial compliance logging hardening. The application applies centralized redaction before writing normal logs or showing user-facing errors, so OAuth authorization codes, token fragments, token refresh response bodies, order identifiers, account value amounts, cookie storage paths, and raw exception details are not exposed through logs, API errors, redirects, or Blazor error banners.
+1. **Download** from [Releases](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest): `QuantInfraNetPro.Web-win-x64-Setup.exe` (Windows) or `QuantInfraNetPro.Web-linux-x64.AppImage` (Linux). No separate .NET install needed. There is no macOS build at the moment.
+2. **Install and run it**, then open **https://127.0.0.1:8443**. The browser warns about the certificate on first launch: that is expected for a local certificate, follow the on-screen note to trust it once.
+3. **Start the free trial** on the `/start` page: verify your email, no card needed.
+4. **Connect your Schwab account** on `/settings` with your own Schwab Trader API App Key, App Secret and account number. You need a Schwab brokerage account and an approved Individual Developer app; registration needs a +1 phone number and approval takes a few business days. Step by step: [Charles Schwab Developer Registration Guide](Charles%20Schwab%20Developer%20Registration%20Guide.md).
+5. **Set your target weights** on `/Rebalance` and check the trade list before anything runs.
 
-Version **1.6.3** adds a **Privacy Mask** toggle: sensitive financial amounts and account numbers are masked as `****` by default on the Dashboard and Rebalance pages. Users can click the eye icon to reveal actual values. This feature is part of ongoing financial data protection improvements.
+Stuck? Let your AI agent do it: give [AGENTS.md](AGENTS.md) to Claude Code or Cursor and say "install AWLPilot for me".
 
-Trading data, Schwab credentials, OAuth tokens, and application logs remain local to your machine. License validation still sends only the limited licensing fields described in [Data Privacy Statement](DATA_PRIVACY.md).
+## Price
 
+Free to download and try; the in-app trial includes every feature. Pro is **$49/month** or **$490/year**, or **$490 for one year** by Alipay / WeChat Pay. A **Family** plan ($9,800/year) adds one-to-one technical service. Buy from the [pricing page](https://www.alpha-wealth-lab.com/pricing/); your license key arrives by email.
 
-## Who Is This For
+## Support
 
-- Quantitative traders who trade through Charles Schwab
-- Developers building automated trading strategies on the .NET / C# stack
-- Anyone who needs Schwab API access to run 24/7 without babysitting token refresh
+- Bugs and questions: [GitHub Issues](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/issues) or alphawealthlab@outlook.com. No promised response time on Pro; Family has priority replies.
+- Server + PC walkthrough: [LAN-Server-Setup.md](LAN-Server-Setup.md). Telegram: https://t.me/+VPy-VLis8gVmYWM1
+- Release notes: [CHANGELOG.md](CHANGELOG.md) and the [website changelog](https://www.alpha-wealth-lab.com/changelog).
 
-## Prerequisites
+## What AWLPilot is not
 
-| Requirement | Why |
-|-------------|-----|
-| Charles Schwab brokerage account | Required to trade. Open at schwab.com |
-| Schwab API credentials (Client ID & Secret) | Apply via Schwab Developer Portal (2-5 business days) |
-| .NET 8 Runtime | Download from dotnet.microsoft.com |
-| License activation | Activate a 3-month free trial in-app, or enter an existing license for continued use |
+Software you run yourself, not a robo-adviser. We do not hold your money, open accounts, place trades on anyone's behalf, or give investment advice. You connect your own Schwab account with your own API credentials and you set the rules. Read the [Risk Disclaimer](CHARLES_SCHWAB_DISCLAIMER.md) and the [Data Privacy Statement](DATA_PRIVACY.md). Not affiliated with or endorsed by Charles Schwab.
 
-## Quick Start
+## Upgrading
 
-1. **Download for free** the ZIP package for your OS from [GitHub Releases](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases)
-2. **Extract** to any folder
-3. **Run** the executable (Windows: `Quant.Infra.Net.Pro.Web.exe`, macOS/Linux: `./Quant.Infra.Net.Pro.Web`)
-4. **Open** your browser at **https://127.0.0.1:8443**
-5. **Activate a free trial**: Follow the on-screen /start flow — verify your email, activate a 3-month trial, or enter an existing license
-6. **Configure**: Go to /settings and enter your Schwab App Key, App Secret, and Account Number
-7. **Start trading**: The Dashboard shows your account, positions, quotes, and order history
+**Install once, then upgrade from inside the app.** From v1.8.0 the app checks for a new version two
+minutes after it starts and every 24 hours after that. When one is found, a banner appears at the top of
+every page and `/update` shows the installed version, the latest version, the release notes and a single
+`Upgrade & Restart` button — no reinstall, no re-download of a ZIP.
 
-> First launch shows a browser security warning — expected for a local self-signed cert. Follow console instructions to trust it once.
+- Your configuration and strategy data live in `%APPDATA%\Quant.Infra.Net.Pro`, **outside** the program
+  folder, so an upgrade never overwrites them.
+- A snapshot of `config/` and `Data/` is taken before every upgrade and the five most recent snapshots
+  are kept under `backups/`.
+- The upgrade is **refused while trading is in flight** — a running rebalance, working or queued orders,
+  or US market hours (09:30–16:00 ET on weekdays) with automatic mode on. The reason is always shown.
+  `Upgrade after market close` retries the check after 16:30 ET.
+- ZIP installs and development builds cannot replace themselves while running; they show a download link
+  instead and become one-click installs as soon as you install the installer once.
 
-## License Activation Flow
+## Where your data lives
 
-| Step | New Users | Existing Users |
-|------|-----------|----------------|
-| 1 | Open /start, enter your email | Go directly to /settings |
-| 2 | Verify email via inbox link | Enter License Key and Email manually |
-| 3 | Activate 3-month free trial or enter existing license | Click Save |
-| 4 | App saves License:Key and License:Email to config | Dashboard is ready |
-| 5 | Go to /settings to enter Schwab API credentials | |
+Since **v1.7.0** the program folder and your data are strictly separated. An upgrade — whether it is
+an automatic update or a manual zip overwrite — only replaces the program folder. Your configuration
+and strategy data are never touched.
 
-## Free Trial & Renewal
+| Data | Location |
+|------|----------|
+| Configuration overrides (License Key, Email, Urls, RedirectUri, advanced settings) | `%APPDATA%\Quant.Infra.Net.Pro\config\appsettings.user.json` |
+| Target portfolio, rebalance ratio, drift thresholds, email notification (**the strategy itself**) | `%APPDATA%\Quant.Infra.Net.Pro\Data\rebalance-settings.json` |
+| Rebalance trigger configuration | `%APPDATA%\Quant.Infra.Net.Pro\Data\rebalance-trigger.json` |
+| Manual / Automatic execution mode | `%APPDATA%\Quant.Infra.Net.Pro\Data\rebalance-mode.json` |
+| HTTPS certificate (`quant-infra.pfx` / `.cer`) | `%APPDATA%\Quant.Infra.Net.Pro\certs\` |
+| Logs (rolling daily) | `%APPDATA%\Quant.Infra.Net.Pro\logs\` |
+| Schwab authorization tokens | `%APPDATA%\Quant.Infra.Net.Pro\tokens.dat` (+ `tokens.key`) |
+| EULA acceptance record | `%APPDATA%\Quant.Infra.Net.Pro\eula-acceptance.json` |
+| Schwab API credentials (Charles Key / Secret / login) | `%APPDATA%\Microsoft\UserSecrets\schwab-web-app-secrets\secrets.json` |
 
-| Feature | Details |
-|---------|---------|
-| Free Trial | 3 months, full functionality, 1 device. One trial per email per product. Email verification required. |
-| Renewal | After successful payment via purchase link, license auto-extends. Expired: +30 days from payment. Active: +30 days from current expiry. |
+Configuration is layered, later sources win: shipped `appsettings.defaults.json` (read-only defaults) →
+`config\appsettings.user.json` (your overrides) → environment variables → User Secrets. Settings added
+by a new release therefore arrive automatically as defaults, while the values you edited stay yours.
 
-## Community & Support
+**Prefer the old way?** Copying an `appsettings.json` into the program folder still works on every OS: on the next
+start its License, Urls, RedirectUri and advanced values are applied (Schwab credentials go to User Secrets if
+not already set), and the file is renamed to `appsettings.json.migrated`. The Settings page shows the data folder
+with an **Open folder** button, and the console prints the settings file path at startup.
 
-- **Telegram Group**: https://t.me/+VPy-VLis8gVmYWM1
-- **Business licensing & custom development**: alphawealthlab@outlook.com
-- **Product website**: www.alpha-wealth-lab.com
-- **AI agent guide** (install, connect, troubleshoot; for Claude Code, Cursor, ...): [AGENTS.md](AGENTS.md)
-- **MCP server guide**: [MCP.md](MCP.md)
-- **Server + PC walkthrough** (run the app on one always-on machine, use it from your PC: dashboard, upgrade, MCP over an SSH tunnel; sanitized real deployment guide with architecture diagram): [LAN-Server-Setup.md](LAN-Server-Setup.md)
-- **Risk disclaimer**: [Charles Schwab Risk Disclaimer](CHARLES_SCHWAB_DISCLAIMER.md)
+On macOS and Linux the root is `~/.config/Quant.Infra.Net.Pro/`. On Linux the environment variable
+`QUANT_INFRA_DATA_DIR` overrides the root — required when running as root or under systemd so that
+data does not land in `/root/.config`.
 
-## License
-
-**Quant.Infra.Net.Pro** is free to download and free to try. A valid license key is required only for continued use beyond the 3-month free trial period.
+**Upgrading from a version before 1.7.0**: extract the new version **over the old folder** (releases no longer
+ship `appsettings.json`, so your old one stays in place). On first launch the app migrates the old
+data automatically — License Key, Urls, RedirectUri, advanced overrides, the trigger configuration,
+the HTTPS certificate and the EULA record. Your Schwab authorization stays valid, because tokens were
+already stored outside the program folder and never move. The Settings page also provides
+**Export all settings** / **Import settings** for machine migration or a manual safety copy
+(Schwab credentials are excluded unless you explicitly opt in; authorization tokens are never exported).
+If you extracted the new version into a **different** folder, use **Settings → Import from a previous
+version folder** and point it at the old folder.
 
 ---
 
-# 中文版
+# 中文
 
-## Quant.Infra.Net.Pro — Charles Schwab 无人值守交易网关
+## 一句话
 
-> 官网：**[https://www.alpha-wealth-lab.com/](https://www.alpha-wealth-lab.com/)**
+> **按你自己定的比例，自动再平衡你现有的嘉信账户。**
+> 设一次目标权重（比如 60% VTI / 40% BND），AWLPilot 检查偏离并调回去。软件跑在你自己的电脑上：钱、密码、交易数据都不出你的电脑。
 
-如果你正通过 Charles Schwab 交易，可能面临这些痛点：
+> **名称说明：** 产品现在叫 **AWLPilot**（原名 *Quant.Infra.Net.Pro*）。安装包、程序和数据文件夹暂时仍沿用旧名，看到 `QuantInfraNetPro`、`Quant.Infra.Net.Pro` 属正常，其他没有变化。
 
-| 痛点 | Pro Edition 如何解决 |
-|------|---------------------|
-| Schwab Access Token 每 30 分钟过期，Refresh Token 每 7 天过期 | 全自动 Token 生命周期管理：每 15 分钟后台刷新 + 第 6.5 天代码操控浏览器重新登录 |
-| OAuth 重授权需要浏览器操作（破坏无人值守） | 代码操控浏览器重新登录，内置 30 小时重试窗口 |
-| MFA / 二步验证阻断自动化登录 | 应用可检测到 MFA 并暂停自动重授权，等待用户手动处理。MFA 无法自动化绕过，需用户在浏览器中完成授权。 |
-| API 凭据配置繁琐易错 | 浏览器 UI 配置页面：所有凭据通过网页设置 |
-| 无人值守运行状态不可见 | 每 60 秒自动刷新仪表盘：Token 状态、重授权心跳、Cookie 状态一目了然 |
-| 本地 SSL 证书管理麻烦 | 自动生成 5 年有效证书，到期前 30 天自动续期 |
+## 为什么做它
 
-## 功能总览
+嘉信只在 *Intelligent Portfolios* 里自动再平衡，而且用它选的基金、强制留现金。你在普通账户里持有自己的 ETF，就只能自己算、自己下单；用脚本调 Schwab API，每 7 天 refresh token 一过期就断。AWLPilot 补的就是这个空档：**你自己的组合、你自己的账户，自动再平衡。**
 
-| 功能 | 说明 |
+## 能做什么
+
+| | |
+|---|---|
+| **按你的规则再平衡** | 设目标权重；看到当前偏离和要下的每一笔单；手动执行，或（Pro）自动执行。有订单在途时，安全护栏会拦住自动执行。 |
+| **一直保持连接** | 自动处理 Schwab 30 分钟的 access token 和 7 天的 refresh token，包括自动重新登录。遇到 MFA 会停下来提醒你，不会绕过。 |
+| **数据留在本机** | 跑在你自己的电脑或服务器上。凭据、Token、交易和日志都在本机，敏感金额默认遮盖。 |
+| **配合你的 AI Agent** | 可选的只读 MCP 服务，Claude Code、Cursor 等可读取账户和再平衡建议；没有任何下单或撤单工具。见 [MCP.md](MCP.md)。 |
+| **也是开发者 API** | 本地 REST API（带 Swagger）：账户、持仓、行情、期权链、历史行情、订单历史。 |
+
+## 10 分钟上手
+
+1. 到 [Releases](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest) 下载：`QuantInfraNetPro.Web-win-x64-Setup.exe`（Windows）或 `QuantInfraNetPro.Web-linux-x64.AppImage`（Linux）。无需另装 .NET；目前没有 macOS 版本。
+2. 安装并运行，浏览器打开 **https://127.0.0.1:8443**。首次启动会提示证书不受信任，这是本地证书的正常现象，按页面提示信任一次即可。
+3. 在 `/start` 页面开始免费试用：邮箱验证即可，无需绑卡。
+4. 在 `/settings` 填入你自己的 Schwab Trader API 的 App Key、App Secret 和账号。需要嘉信账户和已批准的个人开发者应用；注册需要 +1 电话号码，审核要几个工作日。详见 [Charles Schwab 开发者注册指南](Charles%20Schwab%20Developer%20Registration%20Guide.md)。
+5. 在 `/Rebalance` 设目标权重，先检查动作单，再决定执行。
+
+卡住了？让你的 AI Agent 来：把 [AGENTS.md](AGENTS.md) 给 Claude Code 或 Cursor，说“帮我安装 AWLPilot”。
+
+## 价格
+
+免费下载、免费试用，试用期内全部功能可用。Pro **$49/月** 或 **$490/年**，或用支付宝/微信一次性 **$490 买一年**；Family（$9,800/年）另含一对一技术服务。在[定价页](https://www.alpha-wealth-lab.com/pricing/)购买，License 发到你的邮箱。
+
+## 支持
+
+问题和 Bug：[GitHub Issues](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/issues) 或 alphawealthlab@outlook.com；Pro 不承诺响应时间，Family 优先回复。更新记录见 [CHANGELOG.md](CHANGELOG.md)。
+
+## AWLPilot 不是什么
+
+它是你自己运行的软件，不是机器人投顾。我们不托管资金、不代客开户、不代客下单、不提供投资建议。你用自己的嘉信账户和 API 凭证连接，规则由你设定。请阅读[风险免责声明](CHARLES_SCHWAB_DISCLAIMER.md)和[数据隐私声明](DATA_PRIVACY.md)。与嘉信无关联，也未获其认可。
+
+## 升级方式
+
+**装一次安装器，之后在应用内一键升级。** 从 v1.8.0 起，应用在启动 2 分钟后检查一次新版本，之后每 24 小时检查一次。
+发现新版本时，页面顶部会出现提示横幅，`/update` 页面显示已安装版本、最新版本、更新说明，以及一个
+`Upgrade & Restart` 按钮——无需重装，也无需重新下载 ZIP。
+
+- 配置与策略数据存放在 `%APPDATA%\Quant.Infra.Net.Pro`，**在程序目录之外**，升级绝不会覆盖它们。
+- 每次升级前都会把 `config/` 与 `Data/` 快照到 `backups/`，保留最近 5 份。
+- **交易进行中会拒绝升级**——再平衡正在执行、存在未完成订单，或自动模式下处于美股交易时段
+  （工作日 09:30–16:00 ET）。拒绝时会说明原因。`Upgrade after market close` 会在 16:30 ET 后重试。
+- ZIP 安装与开发构建在运行期间无法自我替换，它们显示下载链接；只要安装一次安装器，就会变成一键升级。
+
+## 数据存放位置
+
+自 **v1.7.0** 起，程序目录与你的数据严格分离。升级（无论是自动更新还是手动覆盖 zip）只替换程序目录，
+**配置与策略数据永远不会被动到**。
+
+| 数据 | 位置 |
 |------|------|
-| 账户仪表盘 | 实时总览：账户总值、现金余额、购买力、未实现/已实现盈亏 |
-| 持仓视图 | 当前持仓及成本价、未实现盈亏 |
-| 实时行情 | 股票实时报价（AAPL、MSFT 等），自动刷新 |
-| 期权链 | 当前期权链数据（行权价、到期日、类型、买卖价、最新价、成交量、持仓量），不是历史期权链 |
-| 订单历史 | 最近 60 天订单记录 |
-| 历史行情 API | 仅支持美股和 ETF 的 OHLCV 蜡烛图，支持分钟级到月级。Schwab 不提供期权或期货的 price history。 |
-| 期权 API | 历史期权数据下载（CSV/JSON），批量查询支持 |
-| 组合再平衡 | 多标的再平衡策略管理：可编辑目标持仓、偏离度计算、手动/自动执行模式 |
-| 隐私脱敏 | 仪表盘和再平衡页面上眼睛图标切换——敏感金额与账号默认遮盖为 '****' |
-| 连接自愈 | 集中式 Schwab 连接恢复，失败读取时即时 Token 刷新，网络中断后短退避 |
-| 自动重授权 | Playwright 浏览器自动化静默重授权，在 7 天 refresh token 过期前自动触发，内置 30 小时重试窗口 |
-| License 验证 | LicenseForge 驱动的定期验证，离线缓存容错 |
-| 版本徽标 | 导航栏显示当前版本号，链接到完整版本历史页面 |
-| 跨平台支持 | Windows、macOS、Linux 全平台支持，Token 存储自动适配平台（DPAPI / AES-GCM） |
-| Web API | 完整 RESTful API，支持 Swagger 文档和 API 版本管理 |
+| 配置覆盖项（License Key、邮箱、Urls、RedirectUri、高级设置） | `%APPDATA%\Quant.Infra.Net.Pro\config\appsettings.user.json` |
+| 目标持仓、再平衡比例、漂移阈值、邮件通知（**策略本体**） | `%APPDATA%\Quant.Infra.Net.Pro\Data\rebalance-settings.json` |
+| 再平衡触发配置 | `%APPDATA%\Quant.Infra.Net.Pro\Data\rebalance-trigger.json` |
+| 手动/自动执行模式 | `%APPDATA%\Quant.Infra.Net.Pro\Data\rebalance-mode.json` |
+| HTTPS 证书（`quant-infra.pfx` / `.cer`） | `%APPDATA%\Quant.Infra.Net.Pro\certs\` |
+| 日志（按天滚动） | `%APPDATA%\Quant.Infra.Net.Pro\logs\` |
+| Schwab 授权 token | `%APPDATA%\Quant.Infra.Net.Pro\tokens.dat`（含 `tokens.key`） |
+| EULA 接受记录 | `%APPDATA%\Quant.Infra.Net.Pro\eula-acceptance.json` |
+| Schwab API 凭据（Charles Key / Secret / 登录名） | `%APPDATA%\Microsoft\UserSecrets\schwab-web-app-secrets\secrets.json` |
 
-## 金融合规与隐私更新
+配置为分层结构，后加载的覆盖先加载的：随程序发布的 `appsettings.defaults.json`（只读默认值）→
+`config\appsettings.user.json`（你的覆盖项）→ 环境变量 → User Secrets。
+因此新版本新增的配置项自动以默认值补齐，而你改过的值保持不动。
 
-**1.5.1** 版本已完成金融合规日志加固。应用现在会在普通日志写入和用户可见错误展示前统一执行敏感信息脱敏，OAuth 授权码、Token 片段、Token 刷新响应体、订单标识、账户金额、Cookie 存储路径和原始异常详情不会再通过日志、API 错误、重定向参数或 Blazor 错误提示暴露。
+**习惯老办法？** 在任何系统上，把 `appsettings.json` 复制到程序目录依然有效：下次启动时会应用其中的 License、Urls、
+RedirectUri 与高级设置（Schwab 凭据若尚未设置则写入 User Secrets），随后文件改名为 `appsettings.json.migrated`。
+Settings 页显示数据目录并提供 **Open folder** 按钮，启动时控制台也会打印设置文件路径。
 
-**1.6.3** 版本新增**隐私脱敏开关**：敏感金额和账号在仪表盘和再平衡页面上默认遮盖为 `****`，用户可点击眼睛图标切换显示实际数值。这是金融数据保护持续优化的一部分。
+macOS 与 Linux 的根目录为 `~/.config/Quant.Infra.Net.Pro/`。Linux 上可用环境变量
+`QUANT_INFRA_DATA_DIR` 覆盖根目录——以 root 或 systemd 运行时必须设置，否则数据会落到 `/root/.config`。
 
-交易数据、Schwab 凭据、OAuth Token 和应用日志仍保留在用户本机。License 验证仅发送 [数据隐私声明](DATA_PRIVACY.md) 中列出的有限授权字段。
-
-## 适用人群
-
-- 通过 Charles Schwab 交易的量化交易者
-- 在 .NET / C# 技术栈上构建自动化策略的开发者
-- 需要 7x24 无人值守运行 Schwab API 而不想每日手动刷 Token 的任何人
-
-## 前置条件
-
-| 条件 | 说明 |
-|------|------|
-| Charles Schwab 交易账户 | 前往 schwab.com 开户 |
-| Schwab API 凭据（Client ID & Secret） | 通过 Schwab Developer Portal 申请，审核需 2-5 个工作日 |
-| .NET 8 Runtime | 从 dotnet.microsoft.com 下载 |
-| License 激活 | 应用内可激活 3 个月免费试用；继续使用时输入已有 License |
-
-## 快速开始
-
-1. 从 [GitHub Releases](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases) 免费下载对应操作系统的 ZIP 包
-2. 解压到任意文件夹
-3. 运行可执行文件（Windows：`Quant.Infra.Net.Pro.Web.exe`，macOS/Linux：`./Quant.Infra.Net.Pro.Web`）
-4. 在浏览器中访问 **https://127.0.0.1:8443**
-5. 按照 /start 页面指引：验证邮箱 → 激活 3 个月免费试用或输入已有 License
-6. 前往 /settings 输入 Schwab API 凭据
-
-> 首次启动浏览器会显示安全警告——本地自签名证书的正常现象，按控制台提示信任一次即可。
-
-## 授权激活流程
-
-| 步骤 | 新用户 | 已有用户 |
-|------|--------|---------|
-| 1 | 打开 /start 输入邮箱 | 直接前往 /settings |
-| 2 | 点击邮箱中的验证链接，返回验证 | 手动输入 License Key 和 Email |
-| 3 | 激活 3 个月免费试用或输入已有 License | 点击保存 |
-| 4 | 应用自动保存 License 信息到本地配置 | 仪表盘就绪 |
-| 5 | 前往 /settings 配置 Schwab API 凭据 | |
-
-## 免费试用与续费
-
-| 功能 | 说明 |
-|------|------|
-| 免费试用 | 3 个月，全部功能，1 台设备。同一产品同一邮箱仅可领取一次。试用前需验证邮箱。 |
-| 续费 | 通过购买链接付款后 License 自动延长。已过期：+30 天从付款时间。未过期：+30 天从当前过期时间。 |
-
-## 社区与支持
-
-- **Telegram 群组**: https://t.me/+VPy-VLis8gVmYWM1
-- **商业授权与定制开发**: alphawealthlab@outlook.com
-- **产品官网**: www.alpha-wealth-lab.com
-- **AI agent 指南**（安装、连接、排错；适用于 Claude Code、Cursor 等）: [AGENTS.md](AGENTS.md)
-- **MCP 使用说明**: [MCP.md](MCP.md)
-- **服务器 + 电脑实操指南**（一台常开机器跑应用，从您的电脑使用：面板、升级、经 SSH 隧道的 MCP；含架构图的脱敏真实部署记录）: [LAN-Server-Setup.md](LAN-Server-Setup.md)
-- **风险免责声明**: [Charles Schwab 风险免责声明](CHARLES_SCHWAB_DISCLAIMER.md)
-
-## License
-
-Quant.Infra.Net.Pro 可免费下载并免费试用。3 个月免费试用期后，继续使用才需要有效授权码。
-
----
-
-
-
-
+**从 1.7.0 之前的版本升级**：把新版本**解压覆盖到旧目录**即可（发布包已不含 `appsettings.json`，旧文件会原样保留）。首次启动会自动迁移旧数据——License Key、Urls、
+RedirectUri、高级覆盖项、触发配置、HTTPS 证书与 EULA 记录。Schwab 授权保持有效，因为 token 本来
+就存放在程序目录之外，从不移动。Settings 页面还提供 **Export all settings** / **Import settings**，
+用于换机器或人工兜底备份（Schwab 凭据默认不含、需明确勾选；授权 token 永不导出）。
+如果把新版本解压到了**另一个**目录，请在 **Settings → Import from a previous version folder** 中填写旧目录路径。
