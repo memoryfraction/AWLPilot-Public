@@ -3,7 +3,7 @@
 > **Keep your own ETFs on target, automatically, in the Schwab account you already have.**
 > Set your target weights once (say 60% VTI / 40% BND). AWLPilot watches the drift and brings you back. It runs on your own computer: your money, your password and your trading data never leave your machine.
 
-[Website & pricing](https://www.alpha-wealth-lab.com/pricing/) · [Download](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest) · [Quick-start guide](Quick-start%20Guide.md) · [Ask an AI agent to set it up](AGENTS.md) · [中文](#中文)
+[Website & pricing](https://www.alpha-wealth-lab.com/pricing/) · [Download](https://github.com/memoryfraction/AWLPilot-Public/releases/latest) · [Quick-start guide](Quick-start%20Guide.md) · [Ask an AI agent to set it up](AGENTS.md) · [中文](#中文)
 
 > **Naming note.** The product is now called **AWLPilot** (formerly *Quant.Infra.Net.Pro*). The installer, the program and the data folder still carry the old name for now, so you will see `QuantInfraNetPro` and `Quant.Infra.Net.Pro` below. Nothing else changes.
 
@@ -20,6 +20,7 @@ AWLPilot closes that gap: **your own mix, your own account, rebalanced automatic
 | | |
 |---|---|
 | **Rebalance by your rules** | Set target weights; see current drift and the exact trade list; run it manually, or let it run automatically (Pro). Safety guardrails block automatic runs while orders are in flight. |
+| **Scheduled check (optional, off by default)** | When and how to rebalance is your strategy, so AWLPilot does nothing on its own unless you turn this on. Turned on, it checks your saved trigger once each weekday at 10:30–11:30 ET: in automatic mode with Pro it places the orders, otherwise it emails you the trade list. Turn on: add `"Rebalance": { "Schedule": { "Enabled": true } }` to `config/appsettings.user.json` and restart. |
 | **Stays connected** | Handles Schwab's 30-minute access token and 7-day refresh token for you, including automatic re-login. If Schwab asks for MFA it stops and tells you; MFA is never bypassed. |
 | **Local first** | Runs on your own PC or server. Credentials, tokens, trades and logs stay on your machine. Sensitive amounts are masked by default. |
 | **Works with your AI agent** | Optional read-only MCP server so Claude Code, Cursor and others can read your account and rebalance suggestions. It has no tool that places or cancels orders. See [MCP.md](MCP.md). |
@@ -27,11 +28,13 @@ AWLPilot closes that gap: **your own mix, your own account, rebalanced automatic
 
 ## Get started in 10 minutes
 
-1. **Download** from [Releases](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest): `QuantInfraNetPro.Web-win-x64-Setup.exe` (Windows) or `QuantInfraNetPro.Web-linux-x64.AppImage` (Linux). No separate .NET install needed. There is no macOS build at the moment.
+1. **Download** from [Releases](https://github.com/memoryfraction/AWLPilot-Public/releases/latest): `QuantInfraNetPro.Web-win-x64-Setup.exe` (Windows) or `QuantInfraNetPro.Web-linux-x64.AppImage` (Linux). No separate .NET install needed. There is no macOS build at the moment.
 2. **Install and run it**, then open **https://127.0.0.1:8443**. The browser warns about the certificate on first launch: that is expected for a local certificate, follow the on-screen note to trust it once.
 3. **Start the free trial** on the `/start` page: verify your email, no card needed.
 4. **Connect your Schwab account** on `/settings` with your own Schwab Trader API App Key, App Secret and account number. You need a Schwab brokerage account and an approved Individual Developer app; registration needs a +1 phone number and approval takes a few business days. Step by step: [Charles Schwab Developer Registration Guide](Charles%20Schwab%20Developer%20Registration%20Guide.md).
 5. **Set your target weights** on `/Rebalance` and check the trade list before anything runs.
+
+**Running it on another computer (a home server) and using it from your PC?** Follow [Two-Computer-Setup.md](Two-Computer-Setup.md). Short version: keep the Schwab callback URL as `https://127.0.0.1:8443/`; open the address printed by `quantctl info` on the server; when Schwab login ends on a page that will not open, copy that whole address into `/lan/finish-auth`. Schwab requires this login again every 7 days.
 
 Stuck? Let your AI agent do it: give [AGENTS.md](AGENTS.md) to Claude Code or Cursor and say "install AWLPilot for me".
 
@@ -41,7 +44,7 @@ Free to download and try; the in-app trial includes every feature. Pro is **$49/
 
 ## Support
 
-- Bugs and questions: [GitHub Issues](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/issues) or alphawealthlab@outlook.com. No promised response time on Pro; Family has priority replies.
+- Bugs and questions: [GitHub Issues](https://github.com/memoryfraction/AWLPilot-Public/issues) or alphawealthlab@outlook.com. No promised response time on Pro; Family has priority replies.
 - Install on one computer, use from another (step by step, 两台电脑详细步骤): [Two-Computer-Setup.md](Two-Computer-Setup.md). Full Linux server walkthrough: [LAN-Server-Setup.md](LAN-Server-Setup.md). Telegram: https://t.me/+VPy-VLis8gVmYWM1
 - Release notes: [CHANGELOG.md](CHANGELOG.md) and the [website changelog](https://www.alpha-wealth-lab.com/changelog).
 
@@ -127,6 +130,7 @@ version folder** and point it at the old folder.
 | | |
 |---|---|
 | **按你的规则再平衡** | 设目标权重；看到当前偏离和要下的每一笔单；手动执行，或（Pro）自动执行。有订单在途时，安全护栏会拦住自动执行。 |
+| **定时检查（可选，默认关闭）** | 何时、如何再平衡是你自己的策略，没打开时 AWLPilot 不会自己做任何事。打开后，每个工作日美东 10:30–11:30 按你保存的触发条件检查一次：自动模式 + Pro 直接下单，否则把动作单发到你的邮箱。打开方法：在 `config/appsettings.user.json` 里加 `"Rebalance": { "Schedule": { "Enabled": true } }`，然后重启。 |
 | **一直保持连接** | 自动处理 Schwab 30 分钟的 access token 和 7 天的 refresh token，包括自动重新登录。遇到 MFA 会停下来提醒你，不会绕过。 |
 | **数据留在本机** | 跑在你自己的电脑或服务器上。凭据、Token、交易和日志都在本机，敏感金额默认遮盖。 |
 | **配合你的 AI Agent** | 可选的只读 MCP 服务，Claude Code、Cursor 等可读取账户和再平衡建议；没有任何下单或撤单工具。见 [MCP.md](MCP.md)。 |
@@ -134,11 +138,13 @@ version folder** and point it at the old folder.
 
 ## 10 分钟上手
 
-1. 到 [Releases](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest) 下载：`QuantInfraNetPro.Web-win-x64-Setup.exe`（Windows）或 `QuantInfraNetPro.Web-linux-x64.AppImage`（Linux）。无需另装 .NET；目前没有 macOS 版本。
+1. 到 [Releases](https://github.com/memoryfraction/AWLPilot-Public/releases/latest) 下载：`QuantInfraNetPro.Web-win-x64-Setup.exe`（Windows）或 `QuantInfraNetPro.Web-linux-x64.AppImage`（Linux）。无需另装 .NET；目前没有 macOS 版本。
 2. 安装并运行，浏览器打开 **https://127.0.0.1:8443**。首次启动会提示证书不受信任，这是本地证书的正常现象，按页面提示信任一次即可。
 3. 在 `/start` 页面开始免费试用：邮箱验证即可，无需绑卡。
 4. 在 `/settings` 填入你自己的 Schwab Trader API 的 App Key、App Secret 和账号。需要嘉信账户和已批准的个人开发者应用；注册需要 +1 电话号码，审核要几个工作日。详见 [Charles Schwab 开发者注册指南](Charles%20Schwab%20Developer%20Registration%20Guide.md)。
 5. 在 `/Rebalance` 设目标权重，先检查动作单，再决定执行。
+
+**装在另一台电脑（家里服务器）上、在自己电脑上用？** 按 [Two-Computer-Setup.md](Two-Computer-Setup.md) 做。要点：嘉信开发者应用的 Callback URL 保持 `https://127.0.0.1:8443/` 不变；在服务器上运行 `quantctl info`，打开它打印的地址；登录嘉信后跳到一个打不开的页面时，把整条地址复制到 `/lan/finish-auth`。嘉信要求每 7 天重新登录一次。
 
 卡住了？让你的 AI Agent 来：把 [AGENTS.md](AGENTS.md) 给 Claude Code 或 Cursor，说“帮我安装 AWLPilot”。
 
@@ -148,7 +154,7 @@ version folder** and point it at the old folder.
 
 ## 支持
 
-问题和 Bug：[GitHub Issues](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/issues) 或 alphawealthlab@outlook.com；Pro 不承诺响应时间，Family 优先回复。更新记录见 [CHANGELOG.md](CHANGELOG.md)。
+问题和 Bug：[GitHub Issues](https://github.com/memoryfraction/AWLPilot-Public/issues) 或 alphawealthlab@outlook.com；Pro 不承诺响应时间，Family 优先回复。更新记录见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## AWLPilot 不是什么
 
