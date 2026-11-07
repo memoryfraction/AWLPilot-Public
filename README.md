@@ -40,7 +40,7 @@ Stuck? Let your AI agent do it: give [AGENTS.md](AGENTS.md) to Claude Code or Cu
 
 ## Price
 
-Free to download and try; the in-app trial includes every feature. Pro is **$49/month** or **$490/year**, or **$490 for one year** by Alipay / WeChat Pay. A **Family** plan ($9,800/year) adds one-to-one technical service. Buy from the [pricing page](https://www.alpha-wealth-lab.com/pricing/); your license key arrives by email.
+**Free is read-only:** see your accounts, positions, drift, the buy/sell list and the IRR chart; it never places an order. **Pro places the orders**, by one click or automatically. Every new install includes a free Pro trial with every feature. Current prices and the Pay buttons are on the [pricing page](https://www.alpha-wealth-lab.com/pricing/) (the only place prices are published). Inside the app, **Renew Subscription** opens Stripe with your license key attached, so the time is added to your existing license automatically.
 
 ## Support
 
@@ -150,7 +150,7 @@ version folder** and point it at the old folder.
 
 ## 价格
 
-免费下载、免费试用，试用期内全部功能可用。Pro **$49/月** 或 **$490/年**，或用支付宝/微信一次性 **$490 买一年**；Family（$9,800/年）另含一对一技术服务。在[定价页](https://www.alpha-wealth-lab.com/pricing/)购买，License 发到你的邮箱。
+**免费版只读：** 查看账户、持仓、偏离、买卖清单和 IRR 曲线，不会下单。**Pro 可以下单**，一键或自动执行。每个新安装都带 Pro 免费试用，全部功能可用。当前价格和付款按钮都在[定价页](https://www.alpha-wealth-lab.com/pricing/)（价格只在那里公布）。软件里点 **Renew Subscription** 会带着你的 License 打开 Stripe 付款，时长自动加到你现有的 License 上。
 
 ## 支持
 
