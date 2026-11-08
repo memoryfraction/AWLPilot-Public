@@ -2,7 +2,7 @@
 
 > **Document Version:** 1.5.1 | **Applies to:** Quant.Infra.Net.Pro v1.5.1+
 >
-> Free download, free 3-month in-app trial. This guide replaces the old in-package `UserManual.md`.
+> Free download, free in-app Pro trial (the app shows its length). This guide replaces the old in-package `UserManual.md`.
 
 ---
 
@@ -24,11 +24,11 @@ This does not change the local-first privacy model: trading data, Schwab credent
 
 | Step | Action | Details |
 |------|--------|---------|
-| 1 | Download for free | Get the ZIP for your OS from [GitHub Releases](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases) |
+| 1 | Download for free | Get the ZIP for your OS from [GitHub Releases](https://github.com/memoryfraction/AWLPilot-Public/releases) |
 | 2 | Extract | Unzip to any folder |
 | 3 | Run | Windows: `Quant.Infra.Net.Pro.Web.exe`. macOS/Linux: `./Quant.Infra.Net.Pro.Web` |
 | 4 | Open browser | Navigate to **https://127.0.0.1:8443** |
-| 5 | Activate free trial | Follow the on-screen /start flow — verify email, activate the 3-month trial, or enter an existing license |
+| 5 | Activate free trial | Follow the on-screen /start flow — verify email, activate the free trial, or enter an existing license |
 | 6 | Configure | Go to /settings, enter Schwab App Key, App Secret, Account Number |
 | 7 | Trade | Dashboard shows your account, positions, quotes, and order history |
 
@@ -39,7 +39,7 @@ This does not change the local-first privacy model: trading data, Schwab credent
 **New Users:**
 1. Open /start, enter your email
 2. Click "Send Verification Link". Check your inbox (and spam folder). Click the verification link, return to /start and click "Verify Email"
-3. Choose either **7-Day Free Trial** (immediate activation) or **I Have a License** (enter your key manually)
+3. Choose either **Free Trial** (immediate activation) or **I Have a License** (enter your key manually)
 4. On success, the app saves License:Key and License:Email to local config
 5. Go to /settings to enter Schwab API credentials
 
@@ -47,9 +47,9 @@ This does not change the local-first privacy model: trading data, Schwab credent
 
 **Existing Users:** Go directly to /settings and enter your License Key and Email manually.
 
-**Free Trial:** The app is free to download and includes a 3-month in-app trial with full functionality on 1 device. One trial per email per product (even after expiry, no new trial). Email verification required before activation.
+**Free Trial:** The app is free to download and includes a free in-app Pro trial with full functionality on 1 device. One trial per email per product (even after expiry, no new trial). Email verification required before activation.
 
-**Renewal:** After successful payment via purchase link, license auto-extends. If expired: +30 days from payment time. If active: +30 days from current expiry.
+**Renewal:** After successful payment via purchase link, the same license is extended by the period you paid for, counted from its current expiry (or from the payment time if it had already expired). Renew from the app's /renew page; plans and prices: https://www.alpha-wealth-lab.com/pricing/
 
 ## 4. Initial Configuration
 
@@ -140,11 +140,11 @@ Full API documentation available in-app when the application is running.
 
 | 步骤 | 操作 | 说明 |
 |------|------|------|
-| 1 | 免费下载 | 从 [GitHub Releases](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases) 下载对应操作系统的 ZIP 包 |
+| 1 | 免费下载 | 从 [GitHub Releases](https://github.com/memoryfraction/AWLPilot-Public/releases) 下载对应操作系统的 ZIP 包 |
 | 2 | 解压 | 解压到任意文件夹 |
 | 3 | 运行 | Windows：`Quant.Infra.Net.Pro.Web.exe`。macOS/Linux：`./Quant.Infra.Net.Pro.Web` |
 | 4 | 打开浏览器 | 访问 **https://127.0.0.1:8443** |
-| 5 | 激活免费试用 | 按 /start 页面指引验证邮箱，激活 3 个月免费试用或输入已有 License |
+| 5 | 激活免费试用 | 按 /start 页面指引验证邮箱，激活免费试用或输入已有 License |
 | 6 | 配置 | 前往 /settings 输入 Schwab App Key、App Secret、Account Number |
 | 7 | 开始交易 | 仪表盘显示账户、持仓、行情、订单历史 |
 
@@ -155,7 +155,7 @@ Full API documentation available in-app when the application is running.
 **新用户：**
 1. 打开 /start 输入邮箱
 2. 点击"发送验证链接"，查看收件箱（含垃圾邮件），点击验证链接后返回 /start 再次点击"验证邮箱"
-3. 选择 **3 个月免费试用**（立即激活）或 **我有 License**（手动输入授权码）
+3. 选择 **免费试用**（立即激活）或 **我有 License**（手动输入授权码）
 4. 激活成功后应用自动保存 License Key 和 Email 到本地配置
 5. 前往 /settings 输入 Schwab API 凭据
 
@@ -163,9 +163,9 @@ Full API documentation available in-app when the application is running.
 
 **已有用户：** 直接前往 /settings 手动输入 License Key 和 Email。
 
-**免费试用：** 应用可免费下载，并内置 3 个月免费试用；试用期内开放全部功能，限 1 台设备。同一邮箱同一产品仅可领取一次（过期后不再签发）。试用前需完成邮箱验证。
+**免费试用：** 应用可免费下载，并内置 Pro 免费试用（时长以应用显示为准）；试用期内开放全部功能，限 1 台设备。同一邮箱同一产品仅可领取一次（过期后不再签发）。试用前需完成邮箱验证。
 
-**续费：** 通过购买链接付款成功后 License 自动延长。已过期：从付款时间 +30 天。未过期：从当前过期时间 +30 天。
+**续费：** 付款成功后，同一个 License 按所付周期自动延长：未过期从当前到期日起算，已过期从付款时间起算。在软件的 /renew 页面续费；方案和价格：https://www.alpha-wealth-lab.com/pricing/
 
 ## 4. 初始配置
 
@@ -232,7 +232,7 @@ Full API documentation available in-app when the application is running.
 | 可以在 VPS 上运行吗？ | 可以，仅限内网部署，严禁公网暴露。 |
 | 需要联网吗？ | 需要连接 Schwab API 和验证 License。交易数据保留在本地。 |
 | 试用过期了怎么办？ | 购买 License 后在 /settings 中输入。 |
-| 如何续费？ | 使用购买链接，付款后 License 自动延长。 |
+| 如何续费？ | 在软件的 /renew 页面付款，License 自动延长。 |
 | 浏览器显示不安全警告？ | 自签名证书的正常现象，继续前往即可。 |
 | 遇到 MFA 二次验证怎么办？ | 自动重授权已暂停。请在浏览器中手动完成 Schwab OAuth 授权后重启应用。 |
 
