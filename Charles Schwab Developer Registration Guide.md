@@ -116,20 +116,9 @@ The API includes endpoints for:
 | Positions | View current holdings |
 | Transactions | View account transactions |
 
-> ![Account](images/Charles%20Schwab/Account.jpg)
-> *Figure 4: Account API example*
-
 > ![Quote](images/Charles%20Schwab/Quote.jpg)
-> *Figure 5: Quote API example*
+> *Figure 4: Quote API example (market data only)*
 
-> ![Positions](images/Charles%20Schwab/Positions.jpg)
-> *Figure 6: Positions API example*
-
-> ![Order History](images/Charles%20Schwab/Order%20History.jpg)
-> *Figure 7: Order History API example*
-
-> ![Option Chain](images/Charles%20Schwab/Option%20Chain.jpg)
-> *Figure 8: Options Chain API example*
 
 ## Troubleshooting
 
@@ -246,20 +235,9 @@ API 包含以下端点：
 | Positions | 查看当前持仓 |
 | Transactions | 查看账户交易记录 |
 
-> ![Account](images/Charles%20Schwab/Account.jpg)
-> *图 4：Account API 示例*
-
 > ![Quote](images/Charles%20Schwab/Quote.jpg)
-> *图 5：Quote API 示例*
+> *图 4：Quote API 示例（仅行情数据）*
 
-> ![Positions](images/Charles%20Schwab/Positions.jpg)
-> *图 6：Positions API 示例*
-
-> ![Order History](images/Charles%20Schwab/Order%20History.jpg)
-> *图 7：Order History API 示例*
-
-> ![Option Chain](images/Charles%20Schwab/Option%20Chain.jpg)
-> *图 8：Options Chain API 示例*
 
 ## 常见问题
 

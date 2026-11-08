@@ -28,11 +28,11 @@
 ### Install
 
 Requirements: a Charles Schwab brokerage account; Schwab Individual Developer access with an **approved** app
-(App Key + Secret, created at https://developer.schwab.com); Windows, macOS or Linux (x64). The installers are
+(App Key + Secret, created at https://developer.schwab.com); Windows or Linux (x64); there is no macOS build at the moment. The installers are
 self-contained.
 
 Download the latest release from https://github.com/memoryfraction/AWLPilot-Public/releases
-(Windows `Setup.exe`, Linux `.AppImage`, macOS bundle). To find the newest file names:
+(Windows `Setup.exe`, Linux `.AppImage`). To find the newest file names:
 
 ```bash
 curl -fsSL https://api.github.com/repos/memoryfraction/AWLPilot-Public/releases/latest | grep -E '"(tag_name|browser_download_url)"'
@@ -43,8 +43,7 @@ curl -fsSL https://api.github.com/repos/memoryfraction/AWLPilot-Public/releases/
   `mkdir -p ~/Applications`, download to `~/Applications/Quant.Infra.Net.Pro.AppImage` (keep this exact name, the
   updater replaces it in place), `chmod +x` it and run it once. For a server that runs all the time, see
   `linux-server`.
-- **macOS**: open the bundle; the first start asks for the admin password once to trust the local HTTPS
-  certificate.
+- **macOS**: no build at the moment. Use a Windows or Linux computer, or a Linux server (see `linux-server`).
 
 After the first start, open `https://127.0.0.1:8443/` and continue with `first-run`.
 Only download from the GitHub releases page above; never from mirrors.
@@ -160,9 +159,9 @@ The long-term home of downloads and public guides is the GitHub repository https
 ### 安装
 
 前置条件：Charles Schwab 券商账户；Schwab Individual Developer 权限，且应用已 **Approved**（在 https://developer.schwab.com
-创建，得到 App Key + Secret）；Windows、macOS 或 Linux（x64）。安装包自带运行时。
+创建，得到 App Key + Secret）；Windows 或 Linux（x64），目前没有 macOS 版本。安装包自带运行时。
 
-从 https://github.com/memoryfraction/AWLPilot-Public/releases 下载最新版（Windows `Setup.exe`、Linux `.AppImage`、macOS 应用包）。
+从 https://github.com/memoryfraction/AWLPilot-Public/releases 下载最新版（Windows `Setup.exe`、Linux `.AppImage`）。
 查看最新文件名：
 
 ```bash
@@ -173,7 +172,7 @@ curl -fsSL https://api.github.com/repos/memoryfraction/AWLPilot-Public/releases/
 - **Linux 桌面或服务器**：`sudo apt install -y libfuse2`（AppImage 需要 FUSE），然后 `mkdir -p ~/Applications`，
   下载为 `~/Applications/Quant.Infra.Net.Pro.AppImage`（文件名保持不变，升级器会原地替换它），`chmod +x` 后运行一次。
   需要常驻运行的服务器见 `linux-server`。
-- **macOS**：打开应用包；首次启动会请求一次管理员密码，用于信任本地 HTTPS 证书。
+- **macOS**：目前没有版本。请用 Windows 或 Linux 电脑，或装在 Linux 服务器上（见 `linux-server`）。
 
 首次启动后打开 `https://127.0.0.1:8443/`，继续看 `first-run`。只从上面的 GitHub releases 页面下载，不要用镜像。
 
