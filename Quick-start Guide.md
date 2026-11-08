@@ -1,244 +1,204 @@
-# Quant.Infra.Net.Pro 快速开始指南 / Quick Start Guide
+# AWLPilot on one computer: quick start / 单机快速上手
 
-> **Document Version:** 1.5.1 | **Applies to:** Quant.Infra.Net.Pro v1.5.1+
+[English](#english) · [中文](#中文)
+
+> Other ways to start / 其他上手方式：
+> two computers or a home server / 两台电脑或家用服务器 → [Two-Computer-Setup.md](Two-Computer-Setup.md) ·
+> let your AI agent install it / 让 AI agent 帮你装 → [Agent-Setup.md](Agent-Setup.md)
 >
-> Free download, free in-app Pro trial (the app shows its length). This guide replaces the old in-package `UserManual.md`.
+> All screenshots use demo data. 所有截图均为演示数据。
 
 ---
 
-# English
+## English
 
-## 1. Introduction
+### What you will have at the end
 
-**Quant.Infra.Net.Pro** is a local web application that provides an unattended trading gateway for Charles Schwab brokerage accounts. It runs entirely on your own machine, with no cloud intermediaries and no data leaving your computer.
+About 15 minutes of your time (plus the days Schwab takes to approve your developer app, see step 0):
 
-The core problem it solves: Schwab API tokens expire frequently (access token: 30 min, refresh token: 7 days), making 24/7 automated trading impossible without constant manual intervention. This application automates the entire token lifecycle, handles OAuth re-authorization, MFA detection notification, and SSL certificate management — all without user interaction.
+- Your Schwab account on screen, with your **target mix next to your real mix** and the exact buy/sell list that closes the gap.
+- Your strategy's **real return (IRR)**: deposits and withdrawals do not count as gains or losses.
+- With Pro: the orders placed for you, by one click or automatically. Free never places an order.
+- Everything stays on this computer. One click hides every dollar amount on screen.
 
-## 1.1 Financial Compliance Update in v1.5.1
+![Dashboard with the IRR chart (demo data)](images/demo/awl-dashboard.png)
 
-Version **1.5.1** includes financial compliance logging hardening. Sensitive Schwab and trading fields are centrally redacted before normal logs and user-facing errors are produced. OAuth authorization codes, token fragments, token refresh response bodies, order identifiers, account value amounts, cookie storage paths, and raw exception details are no longer exposed through logs, API errors, redirects, or Blazor error banners.
+### 0. Before you start: the Schwab developer app (only you can do this)
 
-This does not change the local-first privacy model: trading data, Schwab credentials, OAuth tokens, and application logs stay on your machine. License validation sends only limited licensing fields as described in [Data Privacy Statement](DATA_PRIVACY.md).
+You need a Schwab brokerage account and an **approved** Schwab Individual Developer app. Registration needs a US
+(+1) phone number and approval usually takes a few business days, so start this first.
+Step by step: [Charles Schwab Developer Registration Guide](Charles%20Schwab%20Developer%20Registration%20Guide.md).
+Set the app's **Callback URL** to exactly `https://127.0.0.1:8443/`.
 
-## 2. Quick Start
+You can install AWLPilot and look around while you wait.
 
-| Step | Action | Details |
-|------|--------|---------|
-| 1 | Download for free | Get the ZIP for your OS from [GitHub Releases](https://github.com/memoryfraction/AWLPilot-Public/releases) |
-| 2 | Extract | Unzip to any folder |
-| 3 | Run | Windows: `Quant.Infra.Net.Pro.Web.exe`. macOS/Linux: `./Quant.Infra.Net.Pro.Web` |
-| 4 | Open browser | Navigate to **https://127.0.0.1:8443** |
-| 5 | Activate free trial | Follow the on-screen /start flow — verify email, activate the free trial, or enter an existing license |
-| 6 | Configure | Go to /settings, enter Schwab App Key, App Secret, Account Number |
-| 7 | Trade | Dashboard shows your account, positions, quotes, and order history |
+### 1. Install
 
-> First launch shows a browser security warning — expected for a local self-signed certificate. Click Advanced > Proceed to 127.0.0.1.
+| Your computer | Download from [the latest release](https://github.com/memoryfraction/AWLPilot-Public/releases/latest) | Then |
+|---|---|---|
+| Windows 10/11 (x64) | `QuantInfraNetPro.Web-win-x64-Setup.exe` | Run it. It installs for your user only (no admin needed) and starts AWLPilot. |
+| Linux (x64) | `QuantInfraNetPro.Web-linux-x64.AppImage` | See the commands below. |
+| macOS | not available at the moment | Use a Windows or Linux computer, or a Linux server ([Two-Computer-Setup.md](Two-Computer-Setup.md)). |
 
-## 3. License Activation
+Linux:
 
-**New Users:**
-1. Open /start, enter your email
-2. Click "Send Verification Link". Check your inbox (and spam folder). Click the verification link, return to /start and click "Verify Email"
-3. Choose either **Free Trial** (immediate activation) or **I Have a License** (enter your key manually)
-4. On success, the app saves License:Key and License:Email to local config
-5. Go to /settings to enter Schwab API credentials
+```bash
+sudo apt install -y libfuse2          # AppImages need FUSE
+mkdir -p ~/Applications
+curl -fL -o ~/Applications/Quant.Infra.Net.Pro.AppImage \
+  "https://github.com/memoryfraction/AWLPilot-Public/releases/latest/download/QuantInfraNetPro.Web-linux-x64.AppImage"
+chmod +x ~/Applications/Quant.Infra.Net.Pro.AppImage
+~/Applications/Quant.Infra.Net.Pro.AppImage
+```
 
-**Important:** The app never reveals a license key by email lookup. Verification links are single-use.
+Keep that exact file name: the built-in updater replaces it in place. No separate .NET install is needed.
 
-**Existing Users:** Go directly to /settings and enter your License Key and Email manually.
+### 2. Open it and start the free trial
 
-**Free Trial:** The app is free to download and includes a free in-app Pro trial with full functionality on 1 device. One trial per email per product (even after expiry, no new trial). Email verification required before activation.
+1. Open **https://127.0.0.1:8443** in your browser. AWLPilot creates its own local certificate and Windows trusts
+   it automatically. If the browser still warns, that is the local certificate: continue once.
+2. Accept the license agreement.
+3. On `/start`, enter your email → **Verify Email** → click the link in your inbox → back on `/start`, click
+   **Verify Email** again → click the free-trial button. No card needed. The app shows how long the trial lasts.
 
-**Renewal:** After successful payment via purchase link, the same license is extended by the period you paid for, counted from its current expiry (or from the payment time if it had already expired). Renew from the app's /renew page; plans and prices: https://www.alpha-wealth-lab.com/pricing/
+### 3. Connect Schwab
 
-## 4. Initial Configuration
+1. On `/settings`, type your Schwab **App Key**, **App Secret** and **Account Number** into the app.
+   Optionally save your Schwab login so AWLPilot can sign in again by itself every 7 days.
+2. Go to `/signin`, log in at Schwab and approve. You come back to the dashboard.
 
-After activation, go to **/settings**:
+Schwab's login lasts 7 days. With the login saved, AWLPilot renews it on its own; otherwise a banner asks you to
+sign in again. If Schwab asks for a phone code (MFA), AWLPilot stops and tells you. It never bypasses MFA.
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| License Key | Yes | Your license key (QIF-xxxx format) |
-| Email | Yes | The email associated with your license |
-| Schwab App Key | Yes | Your Schwab API Client ID |
-| Schwab App Secret | Yes | Your Schwab API Client Secret |
-| Schwab Account Number | Yes | Your Schwab account number |
-| Redirect URI | No | Default: https://127.0.0.1:8443/signin-oidc |
+### 4. Set your target and see the gap
 
-Click Save. The app will automatically restart.
+On `/Rebalance`, enter your target weights (for example 60% VTI / 40% BND) and save.
 
-## 5. Dashboard
+![Target weights (demo data)](images/demo/awl-target.png)
 
-The Dashboard at /dashboard auto-refreshes every 60 seconds.
+AWLPilot shows the drift of each holding and the exact buy/sell list that brings you back:
 
-| Section | Displays |
-|---------|----------|
-| Account Summary | Total value, cash balance, buying power, unrealized/realized P&L |
-| Positions | Current holdings with cost basis and unrealized P&L |
-| Real-Time Quotes | Stock quotes with bid/ask, last price, volume, change |
-| Options Chain | Current options chain data (strike, expiration, type, bid/ask, last, volume, OI); not historical option chains |
-| Order History | Last 60 days of orders with execution details |
-| Token Status | Access token expiry, refresh token status, next re-auth due |
-| MFA Status | Detected during re-auth: auto-reauth suspended, manual intervention needed |
-| Cookie Status | Schwab login session cookie health |
-| Connection Status | Last successful license validation timestamp |
+![Drift and the buy/sell list (demo data)](images/demo/awl-rebalance.png)
 
-## 6. API Reference
+- **Free:** place those orders yourself at Schwab.
+- **Pro:** click **Execute Orders**, or switch to automatic mode with your own trigger (a drift threshold or a schedule).
+  Automatic trading is off until you turn it on, and it asks you to confirm the risk first.
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| /api/v1/accounts | GET | List all linked accounts |
-| /api/v1/accounts/{accountNumber}/positions | GET | Current positions with P&L |
-| /api/v1/marketdata/quotes | GET | Real-time quotes |
-| /api/v1/marketdata/chains | GET | Current options chain (strike, expiration, type, bid/ask, last, volume, OI); not historical option chains |
-| /api/v1/accounts/{accountNumber}/orders | GET/POST | Order history / Place order |
-| /api/v1/marketdata/pricehistory | GET | OHLCV candlestick data for US equities and ETFs only; not options or futures |
+### 5. Every day
 
-Full API documentation available in-app when the application is running.
+- **Dashboard:** account value, positions and your IRR over time.
+  ![IRR over time (demo data)](images/demo/awl-irr.png)
+- **Privacy switch:** one click hides every amount, for screen sharing or screenshots.
+  ![Amounts hidden (demo data)](images/demo/awl-privacy.png)
+- **Upgrades:** a banner appears when a new version exists; `/update` → **Upgrade & Restart**. Your settings are
+  backed up first and never overwritten.
+- **Renew:** Dashboard → **Renew Subscription**, or `/renew`. Plans and prices:
+  https://www.alpha-wealth-lab.com/pricing/
 
-## 7. Unattended Operation
+### Where your data lives
 
-| Challenge | Solution | Duration |
-|-----------|----------|----------|
-| Access token 30 min expiry | Background refresh every 15 min | Unlimited |
-| Refresh token 7 day expiry | Automated browser re-login on day 6.5 with 30-hour retry window | Unlimited |
-| MFA challenge after login | App detects MFA and suspends auto-reauth. User must complete authorization in a browser manually. | Manual intervention required |
-| SSL certificate expiry | Auto-renewed when less than 30 days remaining | 5 years |
-| Network disruption | Exponential backoff retry for automatic recovery | Auto-recovery |
+Windows `%APPDATA%\Quant.Infra.Net.Pro\`, Linux `~/.config/Quant.Infra.Net.Pro/`. Uninstalling or upgrading the
+program never touches it. Details: [README → Where your data lives](README.md#where-your-data-lives).
 
-**Recommendations for 24/7 operation:** Ensure stable internet connection. Note: MFA challenges cannot be automated — monitor the application status and handle manually when notified.
+### If something does not work
 
-## 8. FAQ
-
-| Question | Answer |
-|----------|--------|
-| Can I run on multiple machines? | One license binds to 1 device. Contact us for multi-device plans. |
-| Lost license key? | Contact support with purchase email. |
-| Run on a VPS? | Intranet-only deployment. No public internet exposure allowed. |
-| Does it need internet? | Yes, for Schwab API and LicenseForge validation. Trading data stays local. |
-| Trial expired? | Purchase a license and enter in /settings. |
-| How to renew? | Use the purchase link. License auto-extends after successful payment. |
-| Browser says "not private"? | Expected for local self-signed certificate. Proceed anyway. |
-| MFA challenge appears? | Auto-reauth is suspended. Re-authorize via Schwab OAuth in a browser manually, then restart the app. |
+| Symptom | Fix |
+|---|---|
+| The browser cannot open https://127.0.0.1:8443 | AWLPilot is not running: start it again from the Start menu (Windows) or run the AppImage (Linux). |
+| You keep landing on `/start` | The trial or license is not active yet: finish step 2. |
+| Schwab login fails or "callback" error | The Callback URL in the Schwab portal must be exactly `https://127.0.0.1:8443/`, and the app must be **Approved**. |
+| "Not authorized" banner | Go to `/signin` and log in at Schwab again. |
+| Anything else | Ask your AI agent with [Agent-Setup.md](Agent-Setup.md), or open a [GitHub issue](https://github.com/memoryfraction/AWLPilot-Public/issues). |
 
 ---
 
-# 中文版
+## 中文
 
-## 1. 简介
+### 做完之后你会得到什么
 
-**Quant.Infra.Net.Pro** 是一款本地运行的 Web 应用，为 Charles Schwab（嘉信理财）交易账户提供无人值守的交易网关。它完全运行在您自己的电脑上，没有云中间商，数据不离开您的计算机。
+你自己大约花 15 分钟（另加嘉信审核开发者应用的几天，见第 0 步）：
 
-它解决的核心问题：Schwab API Token 过期频繁（Access Token 30 分钟，Refresh Token 7 天），如果没有持续的手动干预，7x24 自动化交易几乎不可能。该应用自动化了整个 Token 生命周期，自动处理 OAuth 重授权、MFA 检测通知和 SSL 证书管理——全程无需用户操作。
+- 在屏幕上看到嘉信账户，**目标比例和实际比例并排**，以及把差距补回来的精确买卖清单。
+- 策略的**真实收益（IRR）**：入金、出金不算盈亏。
+- 有 Pro 时，由软件替你下单：一键执行或自动执行。免费版从不下单。
+- 一切都留在这台电脑上，一键隐藏屏幕上所有金额。
 
-## 1.1 1.5.1 金融合规更新
+![带 IRR 曲线的仪表盘（演示数据）](images/demo/awl-dashboard.png)
 
-**1.5.1** 版本包含金融合规日志加固。应用会在普通日志写入和用户可见错误展示前统一脱敏 Schwab 与交易相关敏感字段，OAuth 授权码、Token 片段、Token 刷新响应体、订单标识、账户金额、Cookie 存储路径和原始异常详情不再通过日志、API 错误、重定向参数或 Blazor 错误提示暴露。
+### 0. 开始之前：嘉信开发者应用（只能你本人办）
 
-这不会改变本地优先的隐私模型：交易数据、Schwab 凭据、OAuth Token 和应用日志仍保留在用户本机。License 验证仅发送 [数据隐私声明](DATA_PRIVACY.md) 中列出的有限授权字段。
+需要一个嘉信证券账户，和一个**已批准**的嘉信个人开发者应用。注册要 +1 美国手机号，审核一般要几个工作日，所以先办这一步。
+详细步骤：[Charles Schwab 开发者注册指南](Charles%20Schwab%20Developer%20Registration%20Guide.md)。
+应用的 **Callback URL** 必须填 `https://127.0.0.1:8443/`，一字不差。
 
-## 2. 快速入门
+等审核期间，可以先装好 AWLPilot 看看。
 
-| 步骤 | 操作 | 说明 |
-|------|------|------|
-| 1 | 免费下载 | 从 [GitHub Releases](https://github.com/memoryfraction/AWLPilot-Public/releases) 下载对应操作系统的 ZIP 包 |
-| 2 | 解压 | 解压到任意文件夹 |
-| 3 | 运行 | Windows：`Quant.Infra.Net.Pro.Web.exe`。macOS/Linux：`./Quant.Infra.Net.Pro.Web` |
-| 4 | 打开浏览器 | 访问 **https://127.0.0.1:8443** |
-| 5 | 激活免费试用 | 按 /start 页面指引验证邮箱，激活免费试用或输入已有 License |
-| 6 | 配置 | 前往 /settings 输入 Schwab App Key、App Secret、Account Number |
-| 7 | 开始交易 | 仪表盘显示账户、持仓、行情、订单历史 |
+### 1. 安装
 
-> 首次启动浏览器会显示安全警告——本地自签名证书的正常现象，按提示信任一次即可。
+| 你的电脑 | 到[最新版本](https://github.com/memoryfraction/AWLPilot-Public/releases/latest)下载 | 然后 |
+|---|---|---|
+| Windows 10/11（x64） | `QuantInfraNetPro.Web-win-x64-Setup.exe` | 双击运行。只为当前用户安装（不需要管理员），装完自动启动。 |
+| Linux（x64） | `QuantInfraNetPro.Web-linux-x64.AppImage` | 见下面的命令。 |
+| macOS | 暂无 | 请用 Windows 或 Linux 电脑，或装在 Linux 服务器上（[两台电脑教程](Two-Computer-Setup.md)）。 |
 
-## 3. 授权激活
+Linux：
 
-**新用户：**
-1. 打开 /start 输入邮箱
-2. 点击"发送验证链接"，查看收件箱（含垃圾邮件），点击验证链接后返回 /start 再次点击"验证邮箱"
-3. 选择 **免费试用**（立即激活）或 **我有 License**（手动输入授权码）
-4. 激活成功后应用自动保存 License Key 和 Email 到本地配置
-5. 前往 /settings 输入 Schwab API 凭据
+```bash
+sudo apt install -y libfuse2          # AppImage 需要 FUSE
+mkdir -p ~/Applications
+curl -fL -o ~/Applications/Quant.Infra.Net.Pro.AppImage \
+  "https://github.com/memoryfraction/AWLPilot-Public/releases/latest/download/QuantInfraNetPro.Web-linux-x64.AppImage"
+chmod +x ~/Applications/Quant.Infra.Net.Pro.AppImage
+~/Applications/Quant.Infra.Net.Pro.AppImage
+```
 
-**安全说明：** 应用不会通过邮箱查询来显示 License Key。验证链接一次性使用。
+文件名请保持不变，内置升级会原地替换它。不需要另装 .NET。
 
-**已有用户：** 直接前往 /settings 手动输入 License Key 和 Email。
+### 2. 打开并开始免费试用
 
-**免费试用：** 应用可免费下载，并内置 Pro 免费试用（时长以应用显示为准）；试用期内开放全部功能，限 1 台设备。同一邮箱同一产品仅可领取一次（过期后不再签发）。试用前需完成邮箱验证。
+1. 浏览器打开 **https://127.0.0.1:8443**。AWLPilot 会生成自己的本地证书，Windows 会自动信任。浏览器如果仍然提示，那是本地证书，继续访问一次即可。
+2. 接受许可协议。
+3. 在 `/start` 输入邮箱 → **Verify Email** → 点收件箱里的链接 → 回到 `/start` 再点一次 **Verify Email** → 点免费试用按钮。不用绑卡，试用时长以软件显示为准。
 
-**续费：** 付款成功后，同一个 License 按所付周期自动延长：未过期从当前到期日起算，已过期从付款时间起算。在软件的 /renew 页面续费；方案和价格：https://www.alpha-wealth-lab.com/pricing/
+### 3. 连接嘉信
 
-## 4. 初始配置
+1. 在 `/settings` 把嘉信 **App Key**、**App Secret** 和**账号**填进软件。也可以保存嘉信登录信息，让 AWLPilot 每 7 天自动重新登录。
+2. 打开 `/signin`，在嘉信页面登录并授权，然后会回到仪表盘。
 
-激活后前往 **/settings**：
+嘉信登录有效期 7 天。保存了登录信息时 AWLPilot 自动续上，否则页面顶部会提醒你重新登录。嘉信要求手机验证码（MFA）时，AWLPilot 会停下并提醒你，绝不绕过。
 
-| 字段 | 必填 | 说明 |
-|------|------|------|
-| License Key | 是 | 授权码（QIF-xxxx 格式） |
-| Email | 是 | 购买授权时使用的邮箱 |
-| Schwab App Key | 是 | Schwab API Client ID |
-| Schwab App Secret | 是 | Schwab API Client Secret |
-| Schwab Account Number | 是 | Schwab 账户号 |
-| Redirect URI | 否 | 默认：https://127.0.0.1:8443/signin-oidc |
+### 4. 设目标，看差距
 
-点击 Save。应用自动重启。
+在 `/Rebalance` 填目标比例（比如 60% VTI / 40% BND）并保存。
 
-## 5. 仪表盘
+![目标比例（演示数据）](images/demo/awl-target.png)
 
-/dashboard 每 60 秒自动刷新。
+AWLPilot 会显示每个持仓的偏离，以及调回目标所需的精确买卖清单：
 
-| 区域 | 内容 |
-|------|------|
-| 账户摘要 | 账户总值、现金余额、购买力、未实现/已实现盈亏 |
-| 持仓 | 当前持仓及成本价、未实现盈亏 |
-| 实时行情 | 股票实时报价（买卖价、最新价、成交量、涨跌幅） |
-| 期权链 | 当前期权链数据（行权价、到期日、类型、买卖价、最新价、成交量、持仓量），不是历史期权链 |
-| 订单历史 | 最近 60 天订单记录 |
-| Token 状态 | Access Token 过期时间、Refresh Token 状态、下次重授权时间 |
-| MFA 状态 | 重授权时检测到 MFA：自动重授权已暂停，需手动处理 |
-| Cookie 状态 | Schwab 会话 Cookie 健康状况 |
-| 连接状态 | 上次成功 License 验证的时间戳 |
+![偏离和买卖清单（演示数据）](images/demo/awl-rebalance.png)
 
-## 6. API 参考
+- **免费版：** 照着清单自己到嘉信下单。
+- **Pro：** 点 **Execute Orders** 执行，或切到自动模式，按你自己的触发条件（偏离阈值或定时）执行。自动交易默认关闭，打开前会请你确认风险。
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| /api/v1/accounts | GET | 查询所有关联账户 |
-| /api/v1/accounts/{accountNumber}/positions | GET | 当前持仓及盈亏 |
-| /api/v1/marketdata/quotes | GET | 实时行情报价 |
-| /api/v1/marketdata/chains | GET | 当前期权链（行权价、到期日、类型、买卖价、最新价、成交量、持仓量），不是历史期权链 |
-| /api/v1/accounts/{accountNumber}/orders | GET/POST | 订单历史 / 下单 |
-| /api/v1/marketdata/pricehistory | GET | 仅限美股和 ETF 的 OHLCV 蜡烛图数据，不支持期权或期货 |
+### 5. 日常使用
 
-应用运行时可通过 **/api** 查看完整 API 文档。
+- **仪表盘：** 账户市值、持仓、IRR 曲线。
+  ![IRR 曲线（演示数据）](images/demo/awl-irr.png)
+- **隐私开关：** 一键隐藏所有金额，方便共享屏幕或截图。
+  ![金额已隐藏（演示数据）](images/demo/awl-privacy.png)
+- **升级：** 有新版本时页面顶部出现提示，`/update` → **Upgrade & Restart**。升级前自动备份设置，不会覆盖。
+- **续费：** 仪表盘 → **Renew Subscription**，或打开 `/renew`。方案和价格：https://www.alpha-wealth-lab.com/pricing/
 
-## 7. 无人值守运行
+### 数据存放位置
 
-| 挑战 | 方案 | 时长 |
-|------|------|------|
-| Access Token 30 分钟过期 | 后台每 15 分钟自动刷新 | 无限制 |
-| Refresh Token 7 天过期 | 代码操控浏览器自动重新登录，第 6.5 天触发，30 小时重试窗口 | 无限制 |
-| MFA 二次验证 | 应用检测到 MFA 后暂停自动重授权，需用户在浏览器中手动完成授权 | 需手动处理 |
-| SSL 证书到期 | 到期前 30 天自动续期 | 5 年 |
-| 网络中断 | 指数退避重试，自动恢复 | 自动恢复 |
+Windows 在 `%APPDATA%\Quant.Infra.Net.Pro\`，Linux 在 `~/.config/Quant.Infra.Net.Pro/`。卸载或升级程序都不会动它。详见 [README → 数据存放位置](README.md#数据存放位置)。
 
-**7x24 运行建议：** 确保稳定的网络连接。注意：MFA 二次验证无法自动化绕过——请关注应用运行状态，在收到通知时及时手动处理。
+### 遇到问题
 
-## 8. 常见问题
-
-| 问题 | 回答 |
-|------|------|
-| 一个 License 能否在多台机器上运行？ | 每份授权绑定 1 台设备。多设备请联系客服。 |
-| 丢失授权码怎么办？ | 携带购买邮箱联系客服。 |
-| 可以在 VPS 上运行吗？ | 可以，仅限内网部署，严禁公网暴露。 |
-| 需要联网吗？ | 需要连接 Schwab API 和验证 License。交易数据保留在本地。 |
-| 试用过期了怎么办？ | 购买 License 后在 /settings 中输入。 |
-| 如何续费？ | 在软件的 /renew 页面付款，License 自动延长。 |
-| 浏览器显示不安全警告？ | 自签名证书的正常现象，继续前往即可。 |
-| 遇到 MFA 二次验证怎么办？ | 自动重授权已暂停。请在浏览器中手动完成 Schwab OAuth 授权后重启应用。 |
-
----
-
-> **Support / 支持**  
-> Telegram: https://t.me/+VPy-VLis8gVmYWM1  
-> Email: alphawealthlab@outlook.com  
-> Website: www.alpha-wealth-lab.com
+| 现象 | 处理 |
+|---|---|
+| 浏览器打不开 https://127.0.0.1:8443 | AWLPilot 没在运行：Windows 从开始菜单再启动一次，Linux 重新运行 AppImage。 |
+| 总是跳回 `/start` | 试用或 License 还没激活：完成第 2 步。 |
+| 嘉信登录失败或提示 callback 错误 | 嘉信开发者后台的 Callback URL 必须正好是 `https://127.0.0.1:8443/`，且应用状态是 **Approved**。 |
+| 提示未授权 | 打开 `/signin` 重新登录嘉信。 |
+| 其他问题 | 按 [Agent-Setup.md](Agent-Setup.md) 让 AI agent 排查，或提 [GitHub Issue](https://github.com/memoryfraction/AWLPilot-Public/issues)。 |

@@ -3,11 +3,32 @@
 > **Keep your own ETFs on target, automatically, in the Schwab account you already have.**
 > Set your target weights once (say 60% VTI / 40% BND). AWLPilot watches the drift and brings you back. It runs on your own computer: your money, your password and your trading data never leave your machine.
 
-[Website & pricing](https://www.alpha-wealth-lab.com/pricing/) · [Download](https://github.com/memoryfraction/AWLPilot-Public/releases/latest) · [Quick-start guide](Quick-start%20Guide.md) · [Ask an AI agent to set it up](AGENTS.md) · [中文](#中文)
+[Website & pricing](https://www.alpha-wealth-lab.com/pricing/) · [Download](https://github.com/memoryfraction/AWLPilot-Public/releases/latest) · [25-second video](https://www.alpha-wealth-lab.com/#demo) · [One computer](Quick-start%20Guide.md) · [Two computers](Two-Computer-Setup.md) · [Let your AI agent do it](Agent-Setup.md) · [中文](#中文)
 
 > **Naming note.** The product is now called **AWLPilot** (formerly *Quant.Infra.Net.Pro*). The installer, the program and the data folder still carry the old name for now, so you will see `QuantInfraNetPro` and `Quant.Infra.Net.Pro` below. Nothing else changes.
 
 # English
+
+## What you get
+
+| | |
+|---|---|
+| **Your plan, kept.** Set your target mix once. AWLPilot shows the drift and the exact buy/sell list, and with Pro places the orders (one click or automatically). | ![Drift and the buy/sell list (demo data)](images/demo/awl-rebalance.png) |
+| **Your real return.** The IRR chart counts deposits and withdrawals as money moved, not as gains or losses, so you can see whether the plan works. | ![IRR over time (demo data)](images/demo/awl-irr.png) |
+| **Your data stays home.** It runs on your own computer; Schwab keys and account data never leave it. One click hides every amount on screen. | ![Every amount hidden (demo data)](images/demo/awl-privacy.png) |
+| **Hands-off connection.** Schwab's 7-day login is renewed for you; you are told when Schwab needs you (MFA is never bypassed). | ![Dashboard (demo data)](images/demo/awl-dashboard.png) |
+
+Watch the [25-second tour](https://www.alpha-wealth-lab.com/#demo). All images and the video use demo data.
+
+## Choose how to start
+
+| Your situation | Tutorial |
+|---|---|
+| One Windows or Linux computer | [Quick-start Guide.md](Quick-start%20Guide.md) |
+| An always-on computer or home server, used from your PC or other devices on your network | [Two-Computer-Setup.md](Two-Computer-Setup.md) (Linux server details: [LAN-Server-Setup.md](LAN-Server-Setup.md)) |
+| You want your AI agent (Claude Code, Codex, Cursor...) to download, install and check it | [Agent-Setup.md](Agent-Setup.md) |
+
+Every path starts with the one step only you can do: an approved [Schwab developer app](Charles%20Schwab%20Developer%20Registration%20Guide.md).
 
 ## Why it exists
 
@@ -36,7 +57,7 @@ AWLPilot closes that gap: **your own mix, your own account, rebalanced automatic
 
 **Running it on another computer (a home server) and using it from your PC?** Follow [Two-Computer-Setup.md](Two-Computer-Setup.md). Short version: keep the Schwab callback URL as `https://127.0.0.1:8443/`; open the address printed by `quantctl info` on the server; when Schwab login ends on a page that will not open, copy that whole address into `/lan/finish-auth`. Schwab requires this login again every 7 days.
 
-Stuck? Let your AI agent do it: give [AGENTS.md](AGENTS.md) to Claude Code or Cursor and say "install AWLPilot for me".
+Stuck? Let your AI agent do it: [Agent-Setup.md](Agent-Setup.md) has prompts you can copy.
 
 ## Price
 
@@ -114,6 +135,27 @@ version folder** and point it at the old folder.
 
 # 中文
 
+## 你能得到什么
+
+| | |
+|---|---|
+| **计划被执行到位。** 设一次目标比例，AWLPilot 显示偏离和精确的买卖清单；有 Pro 时替你下单（一键或自动）。 | ![偏离和买卖清单（演示数据）](images/demo/awl-rebalance.png) |
+| **看清真实收益。** IRR 曲线把入金、出金当作资金进出，不算盈亏，让你看清策略到底有没有用。 | ![IRR 曲线（演示数据）](images/demo/awl-irr.png) |
+| **数据留在家里。** 跑在你自己的电脑上，嘉信 Key 和账户数据不出这台电脑；一键隐藏屏幕上所有金额。 | ![金额全部隐藏（演示数据）](images/demo/awl-privacy.png) |
+| **连接不用操心。** 嘉信 7 天一次的登录自动续上；需要你本人时会提醒你（绝不绕过 MFA）。 | ![仪表盘（演示数据）](images/demo/awl-dashboard.png) |
+
+看 [25 秒演示视频](https://www.alpha-wealth-lab.com/#demo)。所有截图和视频都是演示数据。
+
+## 选一种上手方式
+
+| 你的情况 | 教程 |
+|---|---|
+| 一台 Windows 或 Linux 电脑 | [单机快速上手](Quick-start%20Guide.md) |
+| 一台常开的电脑或家用服务器，在自己电脑或局域网其他设备上用 | [两台电脑 / 局域网](Two-Computer-Setup.md)（Linux 服务器细节：[LAN-Server-Setup.md](LAN-Server-Setup.md)） |
+| 想让 AI agent（Claude Code、Codex、Cursor…）帮你下载、安装、检查 | [让 AI agent 帮你装](Agent-Setup.md) |
+
+每种方式的第一步都只能你本人办：一个已批准的[嘉信开发者应用](Charles%20Schwab%20Developer%20Registration%20Guide.md)。
+
 ## 一句话
 
 > **按你自己定的比例，自动再平衡你现有的嘉信账户。**
@@ -146,7 +188,7 @@ version folder** and point it at the old folder.
 
 **装在另一台电脑（家里服务器）上、在自己电脑上用？** 按 [Two-Computer-Setup.md](Two-Computer-Setup.md) 做。要点：嘉信开发者应用的 Callback URL 保持 `https://127.0.0.1:8443/` 不变；在服务器上运行 `quantctl info`，打开它打印的地址；登录嘉信后跳到一个打不开的页面时，把整条地址复制到 `/lan/finish-auth`。嘉信要求每 7 天重新登录一次。
 
-卡住了？让你的 AI Agent 来：把 [AGENTS.md](AGENTS.md) 给 Claude Code 或 Cursor，说“帮我安装 AWLPilot”。
+卡住了？让你的 AI agent 来：[Agent-Setup.md](Agent-Setup.md) 里有可直接复制的提示词。
 
 ## 价格
 
