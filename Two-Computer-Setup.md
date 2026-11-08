@@ -35,7 +35,7 @@ On the server, as your normal user (no root needed for the program itself):
 ```bash
 mkdir -p ~/Applications
 curl -fL -o ~/Applications/Quant.Infra.Net.Pro.AppImage \
-  "https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest/download/QuantInfraNetPro.Web-linux-x64.AppImage"
+  "https://github.com/memoryfraction/AWLPilot-Public/releases/latest/download/QuantInfraNetPro.Web-linux-x64.AppImage"
 chmod +x ~/Applications/Quant.Infra.Net.Pro.AppImage
 ~/Applications/Quant.Infra.Net.Pro.AppImage ctl install-cli      # creates the ~/bin/quantctl helper
 ```
@@ -156,7 +156,7 @@ The program makes its own local certificate, so the first time the browser says 
 ```bash
 mkdir -p ~/Applications
 curl -fL -o ~/Applications/Quant.Infra.Net.Pro.AppImage \
-  "https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest/download/QuantInfraNetPro.Web-linux-x64.AppImage"
+  "https://github.com/memoryfraction/AWLPilot-Public/releases/latest/download/QuantInfraNetPro.Web-linux-x64.AppImage"
 chmod +x ~/Applications/Quant.Infra.Net.Pro.AppImage
 ~/Applications/Quant.Infra.Net.Pro.AppImage ctl install-cli      # 生成 ~/bin/quantctl 工具
 ```
