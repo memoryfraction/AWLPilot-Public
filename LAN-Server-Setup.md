@@ -63,13 +63,13 @@ and it is the safest default: the app keeps listening only on loopback plus the 
 
 ### 1. Install on the server
 
-Download the AppImage from the [releases page](https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases)
+Download the AppImage from the [releases page](https://github.com/memoryfraction/AWLPilot-Public/releases)
 as the app user (no root needed for the program itself):
 
 ```bash
 mkdir -p ~/Applications
 curl -fL -o ~/Applications/Quant.Infra.Net.Pro.AppImage \
-  "https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases/download/v<version>/QuantInfraNetPro.Web-linux-x64.AppImage"
+  "https://github.com/memoryfraction/AWLPilot-Public/releases/download/v<version>/QuantInfraNetPro.Web-linux-x64.AppImage"
 chmod +x ~/Applications/Quant.Infra.Net.Pro.AppImage
 ```
 

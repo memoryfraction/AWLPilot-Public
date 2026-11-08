@@ -31,11 +31,11 @@ Requirements: a Charles Schwab brokerage account; Schwab Individual Developer ac
 (App Key + Secret, created at https://developer.schwab.com); Windows, macOS or Linux (x64). The installers are
 self-contained.
 
-Download the latest release from https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases
+Download the latest release from https://github.com/memoryfraction/AWLPilot-Public/releases
 (Windows `Setup.exe`, Linux `.AppImage`, macOS bundle). To find the newest file names:
 
 ```bash
-curl -fsSL https://api.github.com/repos/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest | grep -E '"(tag_name|browser_download_url)"'
+curl -fsSL https://api.github.com/repos/memoryfraction/AWLPilot-Public/releases/latest | grep -E '"(tag_name|browser_download_url)"'
 ```
 
 - **Windows**: run `Setup.exe`; it installs per user and starts the app. The installed copy upgrades itself.
@@ -53,7 +53,7 @@ Only download from the GitHub releases page above; never from mirrors.
 
 1. Open `https://127.0.0.1:8443/` and accept the EULA.
 2. License: `/start` → enter email → **Verify Email** → open the link in the inbox → back on `/start` click
-   Verify Email again → start the **3-month free trial**, or enter an existing key + email in `/settings`.
+   Verify Email again → start the **free Pro trial** (the app shows its length), or enter an existing key + email in `/settings`.
    An existing license is never revealed by email lookup.
 3. `/settings`: the user enters Schwab **App Key**, **App Secret** and **Account Number** (and optionally the
    Schwab login for unattended re-authorization). The Schwab app's callback URL in the developer portal must be
@@ -138,9 +138,9 @@ For errors, the MCP tool `get_recent_log_errors` returns recent redacted warning
 
 ### Buying, renewing and support
 
-Licenses and renewals: contact the seller (alphawealthlab@outlook.com); renewal rules: https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public#free-trial--renewal.
+Licenses and renewals: contact the seller (alphawealthlab@outlook.com); renew inside the app on the /renew page; plans and prices: https://www.alpha-wealth-lab.com/pricing/
 Community: Telegram group linked in the README.
-The long-term home of downloads and public guides is the GitHub repository https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public
+The long-term home of downloads and public guides is the GitHub repository https://github.com/memoryfraction/AWLPilot-Public
 (releases, `AGENTS.md` = this guide's install part, `MCP.md`). Prefer it over any website mirror.
 
 ## 中文
@@ -162,11 +162,11 @@ The long-term home of downloads and public guides is the GitHub repository https
 前置条件：Charles Schwab 券商账户；Schwab Individual Developer 权限，且应用已 **Approved**（在 https://developer.schwab.com
 创建，得到 App Key + Secret）；Windows、macOS 或 Linux（x64）。安装包自带运行时。
 
-从 https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public/releases 下载最新版（Windows `Setup.exe`、Linux `.AppImage`、macOS 应用包）。
+从 https://github.com/memoryfraction/AWLPilot-Public/releases 下载最新版（Windows `Setup.exe`、Linux `.AppImage`、macOS 应用包）。
 查看最新文件名：
 
 ```bash
-curl -fsSL https://api.github.com/repos/memoryfraction/Quant.Infra.Net.Pro-Public/releases/latest | grep -E '"(tag_name|browser_download_url)"'
+curl -fsSL https://api.github.com/repos/memoryfraction/AWLPilot-Public/releases/latest | grep -E '"(tag_name|browser_download_url)"'
 ```
 
 - **Windows**：运行 `Setup.exe`，按用户安装并自动启动。安装版可自行升级。
@@ -181,7 +181,7 @@ curl -fsSL https://api.github.com/repos/memoryfraction/Quant.Infra.Net.Pro-Publi
 
 1. 打开 `https://127.0.0.1:8443/`，接受 EULA。
 2. License：`/start` → 输入邮箱 → **Verify Email** → 打开邮件中的链接 → 回到 `/start` 再点一次 Verify Email →
-   开始 **3 个月免费试用**，或在 `/settings` 输入已有的 Key + 邮箱。已有 License 不会通过邮箱查询泄露。
+   开始 **Pro 免费试用**（时长以应用显示为准），或在 `/settings` 输入已有的 Key + 邮箱。已有 License 不会通过邮箱查询泄露。
 3. `/settings`：用户填写 Schwab **App Key**、**App Secret**、**Account Number**（可选填 Schwab 登录信息以便无人值守重新授权）。
    开发者门户里 Schwab 应用的回调地址必须与应用的 `Urls` 完全一致，默认 `https://127.0.0.1:8443/`。
 4. 授权 Schwab：`/signin` → 在 Schwab 登录 → 同意 → 自动回到仪表盘。见 `schwab-auth`。
@@ -259,7 +259,7 @@ WantedBy=multi-user.target
 
 ### 购买、续费与支持
 
-License 与续费：联系卖家（alphawealthlab@outlook.com）；续费规则：https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public#free-trial--renewal。
+License 与续费：联系卖家（alphawealthlab@outlook.com）；在软件的 /renew 页面续费；方案和价格：https://www.alpha-wealth-lab.com/pricing/
 社区：README 中的 Telegram 群。
-下载与公开指南的长期地址是 GitHub 仓库 https://github.com/memoryfraction/Quant.Infra.Net.Pro-Public
+下载与公开指南的长期地址是 GitHub 仓库 https://github.com/memoryfraction/AWLPilot-Public
 （releases、`AGENTS.md` = 本指南的安装部分、`MCP.md`）。优先使用它，而不是任何网站镜像。
